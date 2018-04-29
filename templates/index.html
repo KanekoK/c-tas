@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>文字認識翻訳</title>
-  <link rel="stylesheet" href="">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/reset.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
 </head>
 <body>
   <header>
@@ -12,9 +13,9 @@
   </header>
   <main>
     <div class="form_box">
-      <form action="confirm.html">
-        <input type="file">
-        <input type="submit">
+      <form action="confirm.html" method="post">
+        <input type="file" name="upload_file[]">
+        <input type="submit" value="翻訳する">
       </form>
     </div>
   </main>

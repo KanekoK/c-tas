@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request
-from app import api
+from flask import Flask, render_template, request, redirect, url_for
+import app
 
 app = Flask(__name__)
 
@@ -7,9 +7,13 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route('/confirm.html')
+@app.route('/confirm.html', methods=['POST'])
 def confirm():
-    return render_template('confirm.html')
+    if request.method == 'POST':
+        return request.form
+        # return render_template('confirm.html')
+    else:
+        return redirect(url_for('index'))
 
 @app.route('/test')
 def test():
