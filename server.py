@@ -1,7 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for
-import app
+import functions
+import os
+from flask import Flask, render_template, request, redirect, url_for, flash
+from werkzeug.utils import secure_filename
+from google.cloud import translate
+
+
+UPLOAD_FOLDER = '/Users/kenya/program/c-tas/uploads'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 app = Flask(__name__)
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.secret_key = 'hogehoge'
 
 @app.route('/')
 def index():
@@ -10,8 +20,21 @@ def index():
 @app.route('/confirm.html', methods=['POST'])
 def confirm():
     if request.method == 'POST':
-        return request.form
-        # return render_template('confirm.html')
+        # ファイルが送信されているかどうか
+        if 'upload_file' not in request.files:
+            return redirect(url_for('index'))
+        file = request.files['upload_file']
+        if file.filename == '':
+            return redirect(request.url)
+        if file and functions.allowed_file(file.filename, ALLOWED_EXTENSIONS):
+            filename = secure_filename(file.filename)
+            file_img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_img_path)
+
+            text = functions.img2digit(file_img_path)
+            return text
+            # return translator.translate(text, src='ko' ,dest='ja')
+            # return render_template('confirm.html')
     else:
         return redirect(url_for('index'))
 

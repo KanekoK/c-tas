@@ -3,14 +3,14 @@ import json
 import base64
 import config
 
-KEY = config.API_KEY
-url = 'https://vision.googleapis.com/v1/images:annotate?key='
-api_url = url + KEY
-
-
 
 # 画像読み込み
 img_file_path = 'uploads/sample.png'
+
+def allowed_file(filename, ALLOWED_EXTENSIONS):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 
 def upload_file_img():
@@ -19,6 +19,10 @@ def upload_file_img():
     # return the_file
 
 def img2digit(img_file_path):
+    KEY = config.API_KEY
+    url = 'https://vision.googleapis.com/v1/images:annotate?key='
+    api_url = url + KEY
+
     # ヘッダー情報
     headers = {'Content-Type': 'application/json'}
     img = open(img_file_path, 'rb')
@@ -48,6 +52,24 @@ def img2digit(img_file_path):
     text = res_json['responses'][0]['fullTextAnnotation']['text']
     return text
 
-print(upload_file_img())
-# print(img2digit(img_file_path))
+def korean2japanese():
+    # Imports the Google Cloud client library
+    from google.cloud import translate
 
+    # Instantiates a client
+    translate_client = translate.Client()
+
+    # The text to translate
+    text = u'Hello, world!'
+    # The target language
+    target = 'ru'
+
+    # Translates some text into Russian
+    translation = translate_client.translate(
+        text,
+        target_language=target)
+
+    print(u'Text: {}'.format(text))
+    print(u'Translation: {}'.format(translation['translatedText']))
+
+korean2japanese()
