@@ -33,7 +33,7 @@ def confirm():
 
             text = functions.img2digit(file_img_path)
             trans_text = functions.korean2japanese(text)
-            return trans_text
+            return render_template('confirm.html', before_text=text, after_text=trans_text)
     else:
         return redirect(url_for('index'))
 
