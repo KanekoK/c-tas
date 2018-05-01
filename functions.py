@@ -2,6 +2,7 @@ import requests
 import json
 import base64
 import config
+from google.cloud import translate
 
 
 # 画像読み込み
@@ -52,24 +53,15 @@ def img2digit(img_file_path):
     text = res_json['responses'][0]['fullTextAnnotation']['text']
     return text
 
-def korean2japanese():
-    # Imports the Google Cloud client library
-    from google.cloud import translate
+def korean2japanese(target_text):
+    KEY = config.API_KEY
+    url = "https://translation.googleapis.com/language/translate/v2?key="
+    api_url = url + KEY
+    sentence = "&q="+target_text
+    langtolang = "&source=ko&target=ja"
+    res = requests.get(api_url+sentence+langtolang)
+    res_json = res.json()
+    trans_text = res_json["data"]["translations"][0]["translatedText"]
+    return trans_text
 
-    # Instantiates a client
-    translate_client = translate.Client()
-
-    # The text to translate
-    text = u'Hello, world!'
-    # The target language
-    target = 'ru'
-
-    # Translates some text into Russian
-    translation = translate_client.translate(
-        text,
-        target_language=target)
-
-    print(u'Text: {}'.format(text))
-    print(u'Translation: {}'.format(translation['translatedText']))
-
-korean2japanese()
+# print(korean2japanese("배웠어요"))
