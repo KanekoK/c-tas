@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from google.cloud import translate
 
 
-UPLOAD_FOLDER = r'C:\Users\kaneko\program\c-tas\uploads'
+UPLOAD_FOLDER = r'/Users/kenya/program/c-tas/uploads'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 app = Flask(__name__)
@@ -24,6 +24,8 @@ def confirm():
         if 'upload_file' not in request.files:
             return redirect(url_for('index'))
         file = request.files['upload_file']
+        from_lang = request.form['from_lang']
+        to_lang = request.form['to_lang']
         if file.filename == '':
             return redirect(request.url)
         if file and functions.allowed_file(file.filename, ALLOWED_EXTENSIONS):
@@ -32,7 +34,7 @@ def confirm():
             file.save(file_img_path)
 
             text = functions.img2digit(file_img_path)
-            trans_text = functions.korean2japanese(text)
+            trans_text = functions.lang_translation(text, from_lang, to_lang)
             return render_template('confirm.html', before_text=text, after_text=trans_text)
     else:
         return redirect(url_for('index'))

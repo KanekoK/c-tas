@@ -6,7 +6,6 @@ from google.cloud import translate
 
 
 # 画像読み込み
-img_file_path = 'uploads/sample.png'
 
 def allowed_file(filename, ALLOWED_EXTENSIONS):
     return '.' in filename and \
@@ -53,15 +52,13 @@ def img2digit(img_file_path):
     text = res_json['responses'][0]['fullTextAnnotation']['text']
     return text
 
-def korean2japanese(target_text):
+def lang_translation(target_text, from_lang, to_lang):
     KEY = config.API_KEY
     url = "https://translation.googleapis.com/language/translate/v2?key="
     api_url = url + KEY
     sentence = "&q="+target_text
-    langtolang = "&source=ko&target=ja"
+    langtolang = "&source="+from_lang+"&target="+to_lang
     res = requests.get(api_url+sentence+langtolang)
     res_json = res.json()
     trans_text = res_json["data"]["translations"][0]["translatedText"]
     return trans_text
-
-# print(korean2japanese("배웠어요"))
