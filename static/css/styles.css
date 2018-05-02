@@ -29,7 +29,20 @@ main form {
   text-align: center;
   font-size: 40px;
 }
-
+main .form_box p {
+  margin-bottom: 20px;
+}
+main .form_box .file_upload {
+  margin-bottom: 80px;
+}
 main form .button {
   padding-top: 140px;
+}
+.trans_button {
+  padding: 10px;
+  border: 1px solid #0e0e0e;
+  border-radius: 20px;
+}
+.back {
+  text-align: center;
 }

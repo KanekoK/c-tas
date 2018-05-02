@@ -5,10 +5,10 @@ from werkzeug.utils import secure_filename
 from google.cloud import translate
 
 
-UPLOAD_FOLDER = r'/Users/kenya/program/c-tas/uploads'
+UPLOAD_FOLDER = r'/c-tas/uploads'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
-app = Flask(__name__)
+application = app = Flask(__name__)
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = 'hogehoge'
@@ -26,6 +26,7 @@ def confirm():
         file = request.files['upload_file']
         from_lang = request.form['from_lang']
         to_lang = request.form['to_lang']
+        # target_text = request.form['target_text']
         if file.filename == '':
             return redirect(request.url)
         if file and functions.allowed_file(file.filename, ALLOWED_EXTENSIONS):
@@ -39,10 +40,6 @@ def confirm():
     else:
         return redirect(url_for('index'))
 
-@app.route('/test')
-def test():
-    return api
-
 if __name__ == '__main__':
     app.debug = True
-    app.run(host='localhost', port=80)
+    app.run()
