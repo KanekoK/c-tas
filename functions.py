@@ -3,15 +3,15 @@ import json
 import base64
 import config
 from google.cloud import translate
-
+from boto.s3.connection import S3Connection
+from boto.s3.key import Key
+from io import BytesIO
 
 # 画像読み込み
 
 def allowed_file(filename, ALLOWED_EXTENSIONS):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
 
 def upload_file_img():
     pass
@@ -62,3 +62,25 @@ def lang_translation(target_text, from_lang, to_lang):
     res_json = res.json()
     trans_text = res_json["data"]["translations"][0]["translatedText"]
     return trans_text
+
+def connect_s3(aws_access_key_id, aws_secret_access_key, bucket, filename):
+    s3 = S3Connection(
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+    )
+    bucket = s3.get_bucket(bucket)
+    k = Key(bucket)
+    k.key = filename
+    k.set_contents_from_filename(filename)
+    fp = BytesIO()
+    uploaded_file = k.get_contents_to_file(fp)
+    # text = img2digit(uploaded_file)
+    return uploaded_file
+
+text = connect_s3(
+    config.S3_ACCESS_KEY,
+    config.S3_SECRET_KEY,
+    "c-tas-uploads",
+    "sample.png"
+)
+print(text)

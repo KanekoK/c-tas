@@ -3,14 +3,16 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.utils import secure_filename
 from google.cloud import translate
+import boto3
+import config
 
 
-UPLOAD_FOLDER = r'/c-tas/uploads'
+# UPLOAD_FOLDER = r'/c-tas/uploads'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 application = app = Flask(__name__)
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = 'hogehoge'
 
 @app.route('/')
@@ -31,10 +33,15 @@ def confirm():
             return redirect(request.url)
         if file and functions.allowed_file(file.filename, ALLOWED_EXTENSIONS):
             filename = secure_filename(file.filename)
-            file_img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(file_img_path)
+            # file_img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            text = functions.connect_s3(
+                config.S3_ACCESS_KEY,
+                config.S3_SECRET_KEY,
+                "c-tas-uploads",
+                filename
+            )
 
-            text = functions.img2digit(file_img_path)
+            # text = functions.img2digit(uploaded_file)
             trans_text = functions.lang_translation(text, from_lang, to_lang)
             return render_template('confirm.html', before_text=text, after_text=trans_text)
     else:
